@@ -17,6 +17,14 @@ import re
 import socket
 
 import serial
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-s', '--sound', action='store_true')
+args = parser.parse_args()
+
+if args.sound:
+    from playsound import playsound
 
 SERIAL_PORT = "/dev/cu.usbmodem144101" # "COM3"
 BAUD_RATE = 9600
@@ -42,6 +50,9 @@ try:
         packet = bytes([HEADER_BYTE, sensor_num])
         sock.sendto(packet, dest)
         print(f"Sweep at sensor {sensor_num} -> Sent {list(packet)}")
+
+        if args.sound:
+            playsound('guzhen.mp3') 
 except KeyboardInterrupt:
     pass
 finally:

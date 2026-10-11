@@ -8,7 +8,7 @@ const int piezoSensor[NUM_SENSORS] = {A0, A1, A2, A3, A4, A5, A6, A7};
 // I noticed usually values don't go above ~600 unless you really really hit the sensor
 // And usually anything 0 - 50 could still be noise
 // so 100 seems like a safe threshold for now 
-const int threshold = 100; 
+const int threshold = 90; 
 
 const unsigned long MIN_SWEEP_DURATION = 30; // ms - must stay active at least this long
 const unsigned long MAX_GAP = 20;             // ms - allowed dropout within a sweep before it's considered ended

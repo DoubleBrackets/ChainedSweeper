@@ -16,10 +16,10 @@ sock.bind((UDP_IP, BOUND_UDP_PORT))
 sock.setblocking(False)
 
 def on_notify(_, data: bytearray):
-    try:
-        print(data.decode())
-    except UnicodeDecodeError:
-        print(data.hex())
+    if data[0] == 1:
+        print("Tilt")
+    else:
+        print("No tilt")
     try:
         sock.sendto(bytes(data), (UDP_IP, TARGET_UDP_PORT))
     except OSError as e:

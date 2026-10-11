@@ -16,7 +16,8 @@ int tiltState;
 int lastTiltState;
 int stableState;
 unsigned long lastChangeTime = 0;
-const unsigned long settleDelay = 200; // so the default tilted value doesn't 'bounce'
+const unsigned long tiltDelay = 5; // debounce period for a tilt
+const unsigned long settleDelay = 5; // debounce period for a settle
 
 uint8_t ON = 1;
 uint8_t OFF = 0;
@@ -85,21 +86,19 @@ void loop() {
   }
 
   if (stableState == TILTED) {
-    if (tiltState == NOT_TILTED) {
+    if (tiltState == NOT_TILTED && (millis() - lastChangeTime) > tiltDelay) {
       stableState = NOT_TILTED;
       // Serial.println("No longer tilted");
       if (deviceConnected) {
-        // String msg = "No longer tilted";
         pCharacteristic->setValue(&ON, 1);
         pCharacteristic->notify();
       }
     }
   } else {
     if (tiltState == TILTED && (millis() - lastChangeTime) > settleDelay) {
-      // stableState = TILTED;
-      Serial.println("Tilted");
+      stableState = TILTED;
+      // Serial.println("Tilted");
       if (deviceConnected) {
-        // String msg = "Tilted";
         pCharacteristic->setValue(&OFF, 1);
         pCharacteristic->notify();
       }

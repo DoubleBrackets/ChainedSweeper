@@ -26,7 +26,7 @@ args = parser.parse_args()
 if args.sound:
     from playsound import playsound
 
-SERIAL_PORT = "/dev/cu.usbmodem144101" # "COM3"
+SERIAL_PORT = "COM7" # "COM3"
 BAUD_RATE = 9600
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5002 # port the game is bound to

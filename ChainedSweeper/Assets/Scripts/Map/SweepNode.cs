@@ -80,8 +80,15 @@ namespace Map
         {
             foreach (KeyValuePair<ChallengeStep, SweepConnectionVisuals> pair in _stepVisuals)
             {
-                Destroy(pair.Value);
+                Destroy(pair.Value.gameObject);
             }
+
+            _stepVisuals.Clear();
+        }
+
+        public void ChallengeEnded()
+        {
+            CleanupVisuals();
         }
     }
 }

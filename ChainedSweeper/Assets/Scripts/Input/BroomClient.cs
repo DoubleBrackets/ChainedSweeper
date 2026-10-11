@@ -55,6 +55,7 @@ public class BroomClient : MonoBehaviour, IGameInput
                 await UniTask.DelayFrame(1, cancellationToken: token);
                 if (client.Available > 0)
                 {
+                    Debug.Log($"Processing {client.Available} bytes");
                     byte[] receivedData = client.Receive(ref remoteEndpoint);
                     foreach (byte b in receivedData)
                     {

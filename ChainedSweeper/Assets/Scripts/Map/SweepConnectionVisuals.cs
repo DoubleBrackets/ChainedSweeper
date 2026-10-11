@@ -16,6 +16,9 @@ namespace Map
         [SerializeField]
         private List<LineRenderer> _indicatorLineRenderers;
 
+        [SerializeField]
+        private ParticleSystem _targetedParticles;
+
         public void Initialize()
         {
             SetIndicator(LineIndicator.None);
@@ -38,6 +41,15 @@ namespace Map
                 {
                     lineRen.enabled = false;
                 }
+            }
+
+            if (indicator is LineIndicator.Next)
+            {
+                _targetedParticles.Play();
+            }
+            else
+            {
+                _targetedParticles.Stop();
             }
         }
     }

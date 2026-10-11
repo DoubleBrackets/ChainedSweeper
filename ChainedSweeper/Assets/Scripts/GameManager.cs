@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     private BroomClient _inputClient;
 
     [SerializeField]
+    private ParticleSystem _isLoadedParticles;
+
+    [SerializeField]
     private GameSetup _setup;
 
     [Header("Debug")]
@@ -61,16 +64,21 @@ public class GameManager : MonoBehaviour
 
         SweepNode nodeSwept = _gameState.Setup.SweepNodes[index];
 
-        if (!challenge.TryGetNextStep(out ChallengeStep step))
+        if (challenge.TryGetNextStep(out ChallengeStep step))
         {
             if (step.To == nodeSwept)
             {
                 challenge.CompleteNextStep(out bool didFinish);
-                _gameState.UseBroomCharge();
                 if (didFinish)
                 {
                     _gameState.Challenges.Remove(challenge);
                     _gameState.Phase = GamePhase.WaitingForChallenge;
+                    foreach (SweepNode node in _gameState.Setup.SweepNodes)
+                    {
+                        node.ChallengeEnded();
+                    }
+
+                    _gameState.UseBroomCharge();
                 }
             }
         }
@@ -105,7 +113,7 @@ public class GameManager : MonoBehaviour
             SweepNode nextNode = _gameState.GetRandomSweepNode();
             challengeNodes.Add(ChallengeStep.CreateStep(nextNode, nextNode));
 
-            for (var i = 0; i < 3; i++)
+            for (var i = 0; i < 2; i++)
             {
                 SweepNode connectTo = nextNode.GetRandomAdjacentNode();
 
@@ -120,6 +128,15 @@ public class GameManager : MonoBehaviour
         foreach (SweepNode node in _gameState.Setup.SweepNodes)
         {
             node.Tick(_gameState);
+        }
+
+        if (_gameState.PlayerState.BroomCharges > 0)
+        {
+            _isLoadedParticles.Play();
+        }
+        else
+        {
+            _isLoadedParticles.Stop();
         }
     }
 }

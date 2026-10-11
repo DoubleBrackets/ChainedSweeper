@@ -16,7 +16,10 @@ int tiltState;
 int lastTiltState;
 int stableState;
 unsigned long lastChangeTime = 0;
-const unsigned long settleDelay = 50; // so the default tilted value doesn't 'bounce'
+const unsigned long settleDelay = 200; // so the default tilted value doesn't 'bounce'
+
+uint8_t ON = 1;
+uint8_t OFF = 0;
 
 // See the following for generating UUIDs:
 // https://www.uuidgenerator.net/
@@ -84,20 +87,20 @@ void loop() {
   if (stableState == TILTED) {
     if (tiltState == NOT_TILTED) {
       stableState = NOT_TILTED;
-      Serial.println("No longer tilted");
+      // Serial.println("No longer tilted");
       if (deviceConnected) {
-        String msg = "No longer tilted";
-        pCharacteristic->setValue((uint8_t*)msg.c_str(), msg.length());
+        // String msg = "No longer tilted";
+        pCharacteristic->setValue(&ON, 1);
         pCharacteristic->notify();
       }
     }
   } else {
     if (tiltState == TILTED && (millis() - lastChangeTime) > settleDelay) {
-      stableState = TILTED;
+      // stableState = TILTED;
       Serial.println("Tilted");
       if (deviceConnected) {
-        String msg = "Tilted";
-        pCharacteristic->setValue((uint8_t*)msg.c_str(), msg.length());
+        // String msg = "Tilted";
+        pCharacteristic->setValue(&OFF, 1);
         pCharacteristic->notify();
       }
     }

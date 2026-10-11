@@ -1,3 +1,18 @@
+"""
+notes:
+- run `pip install bleak` first for BLE lib
+- we have a 2 byte broom "protocol":
+    - byte 1 = broom command type
+        0 for broom tilt 
+        1 for broom sweep (hence this script hardcodes 1)
+    - byte 2 = data
+        if tilt:
+            0 (not tilted) or 1 (tilted)
+        if sweep:
+            0-7 index of the sensor sweep detected
+
+"""
+
 import asyncio
 import socket
 from bleak import BleakScanner, BleakClient
@@ -10,18 +25,17 @@ UDP_IP = "127.0.0.1"
 BOUND_UDP_PORT = 5001
 # port the game is bound to
 TARGET_UDP_PORT = 5002
+HEADER_BYTE = 0 # 1 for a sweep as defined by above protocol
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind((UDP_IP, BOUND_UDP_PORT))
 sock.setblocking(False)
 
 def on_notify(_, data: bytearray):
-    if data[0] == 1:
-        print("Tilt")
-    else:
-        print("No tilt")
     try:
-        sock.sendto(bytes(data), (UDP_IP, TARGET_UDP_PORT))
+        packet = bytes([HEADER_BYTE, data[0]])
+        sock.sendto(packet, (UDP_IP, TARGET_UDP_PORT))
+        print(f"Sent {list(packet)}")
     except OSError as e:
         print(f"UDP send failed: {e}")
 

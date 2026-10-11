@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -8,7 +9,7 @@ using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BroomClient : MonoBehaviour
+public class BroomClient : MonoBehaviour, IGameInput
 {
     [Tooltip("The port we bind to (that the controller server sends to)")]
     [SerializeField]
@@ -21,10 +22,11 @@ public class BroomClient : MonoBehaviour
     [SerializeField]
     private UnityEvent _onReload;
 
-    private void Awake()
-    {
-        Initialize();
-    }
+    public Action OnReload { get; set; }
+
+    public Action<int> OnHitSweepNode { get; set; }
+
+    private Queue<byte> _receiveProcessQueue = new();
 
     public void Initialize()
     {
@@ -56,10 +58,36 @@ public class BroomClient : MonoBehaviour
                     byte[] receivedData = client.Receive(ref remoteEndpoint);
                     foreach (byte b in receivedData)
                     {
-                        if (b.Equals(1))
+                        _receiveProcessQueue.Enqueue(b);
+                    }
+                }
+
+                // Each game input is 2 bytes
+                // First byte: 0000 for a broom reload, 0001 for a sweep node hit
+                // Second byte: State
+                for (var i = 0; i < _receiveProcessQueue.Count; i += 2)
+                {
+                    byte byte0 = _receiveProcessQueue.Dequeue();
+                    byte byte1 = _receiveProcessQueue.Dequeue();
+
+                    if (byte0 == 0)
+                    {
+                        // Broom reload
+                        bool broomState = byte1 != 0;
+                        if (broomState)
                         {
                             _onReload?.Invoke();
+                            OnReload?.Invoke();
                         }
+
+                        Debug.Log(broomState ? "Reload" : "End Reload");
+                    }
+                    else
+                    {
+                        // Node hit
+                        int nodeHit = byte1;
+                        Debug.Log($"Hit node {nodeHit}");
+                        OnHitSweepNode?.Invoke(nodeHit);
                     }
                 }
             }

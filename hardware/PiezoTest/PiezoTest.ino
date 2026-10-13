@@ -8,10 +8,10 @@ const int piezoSensor[NUM_SENSORS] = {A0, A1, A2, A3, A4, A5, A6, A7};
 // I noticed usually values don't go above ~600 unless you really really hit the sensor
 // And usually anything 0 - 50 could still be noise
 // so 100 seems like a safe threshold for now 
-const int threshold = 90; 
+const int threshold = 70; 
 
-const unsigned long MIN_SWEEP_DURATION = 30; // ms - must stay active at least this long
-const unsigned long MAX_GAP = 20;             // ms - allowed dropout within a sweep before it's considered ended
+const unsigned long MIN_SWEEP_DURATION = 20; // ms - must stay active at least this long
+const unsigned long MAX_GAP = 10;             // ms - allowed dropout within a sweep before it's considered ended
 
 // per-sensor state
 int sensorReading[NUM_SENSORS];
@@ -44,20 +44,23 @@ void loop() {
         inActivity[i] = true;
         activityStart[i] = now;
       }
+      sweepDetected = true; // long enough - call it a sweep
+      // Serial.print("Sweep at sensor: ");
+      Serial.println(i);
       lastActiveTime[i] = now;
     }
 
-    if (inActivity[i] && (now - lastActiveTime[i] > MAX_GAP)) {
-      // activity has ended (gap too long) - decide what it was
-      unsigned long duration = lastActiveTime[i] - activityStart[i];
-      if (duration >= MIN_SWEEP_DURATION) {
-        sweepDetected = true; // long enough - call it a sweep
-        // Serial.print("Sweep at sensor: ");
-        Serial.println(i);
-      }
-      // else: too short, treat as a knock/spike and ignore it
-      inActivity[i] = false;
-    }
+    // if (inActivity[i] && (now - lastActiveTime[i] > MAX_GAP)) {
+    //   // activity has ended (gap too long) - decide what it was
+    //   unsigned long duration = lastActiveTime[i] - activityStart[i];
+    //   if (duration >= MIN_SWEEP_DURATION) {
+    //     sweepDetected = true; // long enough - call it a sweep
+    //     // Serial.print("Sweep at sensor: ");
+    //     Serial.println(i);
+    //   }
+    //   // else: too short, treat as a knock/spike and ignore it
+    //   inActivity[i] = false;
+    // }
 
     // FOR DEBUGGING ONLY
     // Serial.print("sensor");

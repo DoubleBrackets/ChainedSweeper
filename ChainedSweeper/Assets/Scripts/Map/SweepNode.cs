@@ -11,6 +11,12 @@ namespace Map
         [SerializeField]
         private SweepConnectionVisuals _connectionVisualsPrefab;
 
+        [SerializeField]
+        private GameObject _activeObject;
+
+        [SerializeField]
+        private GameObject _inactiveObject;
+
         public List<SweepNode> AdjacentNodes => _adjacentNodes;
 
         public Vector3 Pos => transform.position;
@@ -50,6 +56,9 @@ namespace Map
             {
                 UpdateStepVisual(step);
             }
+
+            _activeObject.SetActive(relevantSteps.Count > 0);
+            _inactiveObject.SetActive(relevantSteps.Count == 0);
         }
 
         private void UpdateStepVisual(ChallengeStep step)

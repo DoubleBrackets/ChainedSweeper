@@ -33,8 +33,9 @@ namespace Map
                 {
                     lineRen.enabled = true;
                     lineRen.positionCount = 3;
+                    Vector3 perpendicular = Quaternion.AngleAxis(-90f, Vector3.up) * (b - a).normalized;
                     lineRen.SetPosition(0, a);
-                    lineRen.SetPosition(1, (a + b) / 2);
+                    lineRen.SetPosition(1, (a + b) / 2 + perpendicular);
                     lineRen.SetPosition(2, b);
                 }
                 else

@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using Input;
 using Map;
 using Protag;
 using UnityEngine;
+using UnityEngine.Events;
 
 /// <summary>
 ///     Top level game script
@@ -25,8 +27,21 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameState _stateDebug;
 
+    [Header("Events")]
+
+    [SerializeField]
+    private UnityEvent _onReload;
+
+    [SerializeField]
+    private UnityEvent _onSweepNode;
+
+    [SerializeField]
+    private UnityEvent _onFinishChallenge;
+
     private GameState _gameState;
     private bool _initialized;
+
+    private float _lastReloadTime;
 
     private void Start()
     {
@@ -69,8 +84,10 @@ public class GameManager : MonoBehaviour
             if (step.To == nodeSwept)
             {
                 challenge.CompleteNextStep(out bool didFinish);
+                _onSweepNode?.Invoke();
                 if (didFinish)
                 {
+                    _onFinishChallenge?.Invoke();
                     _gameState.Challenges.Remove(challenge);
                     _gameState.Phase = GamePhase.WaitingForChallenge;
                     foreach (SweepNode node in _gameState.Setup.SweepNodes)
@@ -86,11 +103,21 @@ public class GameManager : MonoBehaviour
 
     private void HandleReload()
     {
-        _gameState.TryAddBroomCharge();
+        if (Time.time - _lastReloadTime < 0.25f)
+        {
+            return;
+        }
+
+        if (_gameState.TryAddBroomCharge())
+        {
+            _lastReloadTime = Time.time;
+            _onReload?.Invoke();
+        }
     }
 
     private void EndGame()
     {
+        _inputClient.Cleanup();
         _inputClient.OnReload -= HandleReload;
         _inputClient.OnHitSweepNode -= HandleHitSweepNode;
 

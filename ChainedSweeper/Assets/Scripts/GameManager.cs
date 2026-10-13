@@ -1,9 +1,13 @@
 using System.Collections.Generic;
+using DevTools;
 using Input;
 using Map;
 using Protag;
+using TMPro;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
+using Utils;
 
 /// <summary>
 ///     Top level game script
@@ -22,6 +26,28 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameSetup _setup;
 
+    [Header("Game UI")]
+
+    [SerializeField]
+    private TMP_Text _timerText;
+
+    [SerializeField]
+    private TMP_Text _scoreText;
+
+    [SerializeField]
+    private CanvasGroup _gameplayScoreGroup;
+
+    [Header("Score Screen UI")]
+
+    [SerializeField]
+    private GameObject _timeText;
+
+    [SerializeField]
+    private TMP_Text _scoreScreenScoreText;
+
+    [SerializeField]
+    private CinemachineCamera _scoreScreenCamera;
+
     [Header("Debug")]
 
     [SerializeField]
@@ -38,14 +64,22 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private UnityEvent _onFinishChallenge;
 
+    [SerializeField]
+    private UnityEvent _onGameStart;
+
+    [SerializeField]
+    private UnityEvent _onGameEnd;
+
     private GameState _gameState;
-    private bool _initialized;
 
     private float _lastReloadTime;
+    private float _timeLeft;
+    private int _score;
 
     private void Start()
     {
-        InitializeGame();
+        Initialize();
+        SwitchPhase(GamePhase.StartingGame);
     }
 
     private void OnDestroy()
@@ -53,13 +87,13 @@ public class GameManager : MonoBehaviour
         EndGame();
     }
 
-    private void InitializeGame()
+    private void Initialize()
     {
         _gameState = new GameState(_setup);
-        _stateDebug = _gameState;
+        _gameState.Phase = GamePhase.None;
+
         _protag.Initialize(_inputClient);
         _inputClient.Initialize();
-        _initialized = true;
 
         _inputClient.OnReload += HandleReload;
         _inputClient.OnHitSweepNode += HandleHitSweepNode;
@@ -67,6 +101,11 @@ public class GameManager : MonoBehaviour
 
     private void HandleHitSweepNode(int index)
     {
+        if (!_gameState.Phase.IsGameplayPhase())
+        {
+            return;
+        }
+
         if (!_gameState.TryGetCurrentChallenge(out Challenge challenge))
         {
             return;
@@ -89,12 +128,13 @@ public class GameManager : MonoBehaviour
                 {
                     _onFinishChallenge?.Invoke();
                     _gameState.Challenges.Remove(challenge);
-                    _gameState.Phase = GamePhase.WaitingForChallenge;
+                    SwitchPhase(GamePhase.WaitingForChallenge);
                     foreach (SweepNode node in _gameState.Setup.SweepNodes)
                     {
                         node.ChallengeEnded();
                     }
 
+                    _score++;
                     _gameState.UseBroomCharge();
                 }
             }
@@ -103,6 +143,16 @@ public class GameManager : MonoBehaviour
 
     private void HandleReload()
     {
+        if (_gameState.Phase is GamePhase.ScoreScreen)
+        {
+            SwitchPhase(GamePhase.StartingGame);
+        }
+
+        if (!_gameState.Phase.IsGameplayPhase())
+        {
+            return;
+        }
+
         if (Time.time - _lastReloadTime < 0.25f)
         {
             return;
@@ -120,15 +170,23 @@ public class GameManager : MonoBehaviour
         _inputClient.Cleanup();
         _inputClient.OnReload -= HandleReload;
         _inputClient.OnHitSweepNode -= HandleHitSweepNode;
-
-        _initialized = false;
         _protag.Cleanup();
     }
 
     private void Update()
     {
-        if (!_initialized)
+        if (!_gameState.Phase.IsGameplayPhase())
         {
+            return;
+        }
+
+        _timeLeft = Mathf.Max(0f, _timeLeft - Time.deltaTime);
+        _timerText.text = $"{_timeLeft:f0}s";
+        _scoreText.text = _score.ToString();
+
+        if (_timeLeft <= 0f)
+        {
+            SwitchPhase(GamePhase.ScoreScreen);
             return;
         }
 
@@ -149,7 +207,7 @@ public class GameManager : MonoBehaviour
             }
 
             _gameState.Challenges.Add(new Challenge(challengeNodes));
-            _gameState.Phase = GamePhase.ChallengeRunning;
+            SwitchPhase(GamePhase.ChallengeRunning);
         }
 
         foreach (SweepNode node in _gameState.Setup.SweepNodes)
@@ -164,6 +222,51 @@ public class GameManager : MonoBehaviour
         else
         {
             _isLoadedParticles.Stop();
+        }
+    }
+
+    private void SwitchPhase(GamePhase newPhase)
+    {
+        if (_gameState.Phase == newPhase)
+        {
+            return;
+        }
+
+        GamePhase oldPhase = _gameState.Phase;
+        _gameState.Phase = newPhase;
+
+        switch (oldPhase)
+        {
+            case GamePhase.ScoreScreen:
+                _gameplayScoreGroup.SetVisible(true);
+                _scoreScreenCamera.enabled = false;
+                _timeText.SetActive(false);
+                break;
+        }
+
+        switch (newPhase)
+        {
+            case GamePhase.ScoreScreen:
+                _gameplayScoreGroup.SetVisible(false);
+                _scoreScreenCamera.enabled = true;
+                _timeText.SetActive(true);
+                _onGameEnd?.Invoke();
+                break;
+            case GamePhase.StartingGame:
+                SwitchPhase(GamePhase.WaitingForChallenge);
+                _stateDebug = _gameState;
+                _timeLeft = _setup.Time;
+                _score = 0;
+                _onGameStart?.Invoke();
+                break;
+        }
+    }
+
+    private void OnDrawGizmos()
+    {
+        for (var i = 0; i < _setup.SweepNodes.Count; i++)
+        {
+            LabelUtils.Label(_setup.SweepNodes[i].Pos + Vector3.up, $"{i}");
         }
     }
 }

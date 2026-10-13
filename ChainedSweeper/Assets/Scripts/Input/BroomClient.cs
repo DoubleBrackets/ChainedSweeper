@@ -61,8 +61,11 @@ namespace Input
 
         private void HandleSweepAction(InputAction.CallbackContext ctx)
         {
-            var val = (int)ctx.ReadValue<float>();
-            OnHitSweepNode?.Invoke(val);
+            if (ctx.started)
+            {
+                var val = (int)ctx.ReadValue<float>();
+                OnHitSweepNode?.Invoke(val);
+            }
         }
 
         private async UniTaskVoid ReadLoop(CancellationToken token)

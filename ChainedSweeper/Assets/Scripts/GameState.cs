@@ -60,8 +60,19 @@ public class GameState
 
 public enum GamePhase
 {
+    None,
+    StartingGame,
     WaitingForChallenge,
-    ChallengeRunning
+    ChallengeRunning,
+    ScoreScreen
+}
+
+public static class GamePhaseExtensions
+{
+    public static bool IsGameplayPhase(this GamePhase phase)
+    {
+        return phase is GamePhase.WaitingForChallenge or GamePhase.ChallengeRunning;
+    }
 }
 
 [Serializable]
@@ -69,6 +80,7 @@ public class GameSetup
 {
     public int MaxBroomCharges;
     public List<SweepNode> SweepNodes;
+    public float Time;
 }
 
 [Serializable]

@@ -16,7 +16,7 @@ namespace DevTools
             {
                 labelStyle = new GUIStyle();
                 labelStyle.normal.textColor = Color.black;
-                labelStyle.fontSize = 14;
+                labelStyle.fontSize = 24;
                 labelStyle.alignment = TextAnchor.MiddleCenter;
             }
 

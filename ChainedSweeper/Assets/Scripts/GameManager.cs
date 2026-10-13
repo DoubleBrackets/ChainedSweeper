@@ -266,7 +266,7 @@ public class GameManager : MonoBehaviour
     {
         for (var i = 0; i < _setup.SweepNodes.Count; i++)
         {
-            LabelUtils.Label(_setup.SweepNodes[i].Pos + Vector3.up, $"{i}");
+            LabelUtils.Label(_setup.SweepNodes[i].Pos + Vector3.up, $"{i}", Color.red);
         }
     }
 }

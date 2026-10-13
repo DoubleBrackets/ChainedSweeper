@@ -250,6 +250,7 @@ public class GameManager : MonoBehaviour
                 _gameplayScoreGroup.SetVisible(false);
                 _scoreScreenCamera.enabled = true;
                 _timeText.SetActive(true);
+                _scoreScreenScoreText.text = _score.ToString();
                 _onGameEnd?.Invoke();
                 break;
             case GamePhase.StartingGame:

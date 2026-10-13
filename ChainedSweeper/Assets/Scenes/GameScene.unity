@@ -6732,7 +6732,7 @@ MonoBehaviour:
     - {fileID: 457105851}
     - {fileID: 848384520}
     - {fileID: 938381583}
-    Time: 30
+    Time: 60
   _timerText: {fileID: 1441393819}
   _scoreText: {fileID: 272970632}
   _gameplayScoreGroup: {fileID: 1873408035}

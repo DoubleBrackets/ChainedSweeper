@@ -19,6 +19,13 @@ public class GameState
     public GameSetup Setup;
     public List<Challenge> Challenges = new();
 
+    public float LastReloadTime;
+    public float ComboTimerRemaining;
+    public float TimeLeft;
+    public int Score;
+    public int CurrentCombo;
+    public int ComboHigh;
+
     public void UseBroomCharge()
     {
         PlayerState.BroomCharges--;
@@ -56,6 +63,15 @@ public class GameState
         challenge = null;
         return false;
     }
+
+    public void ResetState(GameSetup setup)
+    {
+        TimeLeft = setup.Time;
+        Score = 0;
+        CurrentCombo = 0;
+        ComboHigh = 0;
+        ComboTimerRemaining = setup.InitialComboTimer;
+    }
 }
 
 public enum GamePhase
@@ -81,6 +97,10 @@ public class GameSetup
     public int MaxBroomCharges;
     public List<SweepNode> SweepNodes;
     public float Time;
+    public float ComboTimerOnNodeSwept;
+    public float ComboTimerOnReload;
+    public float InitialComboTimer;
+    public float ComboTimerOnCompleteChallenge;
 }
 
 [Serializable]

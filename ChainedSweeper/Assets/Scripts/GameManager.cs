@@ -3,11 +3,8 @@ using DevTools;
 using Input;
 using Map;
 using Protag;
-using TMPro;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
-using Utils;
 
 /// <summary>
 ///     Top level game script
@@ -26,27 +23,8 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameSetup _setup;
 
-    [Header("Game UI")]
-
     [SerializeField]
-    private TMP_Text _timerText;
-
-    [SerializeField]
-    private TMP_Text _scoreText;
-
-    [SerializeField]
-    private CanvasGroup _gameplayScoreGroup;
-
-    [Header("Score Screen UI")]
-
-    [SerializeField]
-    private GameObject _timeText;
-
-    [SerializeField]
-    private TMP_Text _scoreScreenScoreText;
-
-    [SerializeField]
-    private CinemachineCamera _scoreScreenCamera;
+    private GameUI _gameUI;
 
     [Header("Debug")]
 
@@ -72,9 +50,10 @@ public class GameManager : MonoBehaviour
 
     private GameState _gameState;
 
-    private float _lastReloadTime;
-    private float _timeLeft;
-    private int _score;
+    private float LastReloadTime => _gameState.LastReloadTime;
+    private float TimeLeft => _gameState.TimeLeft;
+    private float ComboTimeLeft => _gameState.ComboTimerRemaining;
+    private int Score => _gameState.Score;
 
     private void Start()
     {
@@ -116,6 +95,11 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        if (index < 0f || index >= _gameState.Setup.SweepNodes.Count)
+        {
+            return;
+        }
+
         SweepNode nodeSwept = _gameState.Setup.SweepNodes[index];
 
         if (challenge.TryGetNextStep(out ChallengeStep step))
@@ -124,6 +108,9 @@ public class GameManager : MonoBehaviour
             {
                 challenge.CompleteNextStep(out bool didFinish);
                 _onSweepNode?.Invoke();
+                RefreshComboTimer(_setup.ComboTimerOnNodeSwept);
+                AddCombo();
+                _gameState.Score++;
                 if (didFinish)
                 {
                     _onFinishChallenge?.Invoke();
@@ -134,8 +121,8 @@ public class GameManager : MonoBehaviour
                         node.ChallengeEnded();
                     }
 
-                    _score++;
                     _gameState.UseBroomCharge();
+                    RefreshComboTimer(_setup.ComboTimerOnCompleteChallenge);
                 }
             }
         }
@@ -153,14 +140,15 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (Time.time - _lastReloadTime < 0.25f)
+        if (Time.time - LastReloadTime < 0.25f)
         {
             return;
         }
 
         if (_gameState.TryAddBroomCharge())
         {
-            _lastReloadTime = Time.time;
+            _gameState.LastReloadTime = Time.time;
+            RefreshComboTimer(_setup.ComboTimerOnReload);
             _onReload?.Invoke();
         }
     }
@@ -175,19 +163,27 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        _gameUI.UpdateUI(_gameState);
+
         if (!_gameState.Phase.IsGameplayPhase())
         {
             return;
         }
 
-        _timeLeft = Mathf.Max(0f, _timeLeft - Time.deltaTime);
-        _timerText.text = $"{_timeLeft:f0}s";
-        _scoreText.text = _score.ToString();
+        _gameState.TimeLeft = Mathf.Max(0f, _gameState.TimeLeft - Time.deltaTime);
 
-        if (_timeLeft <= 0f)
+        if (TimeLeft <= 0f)
         {
             SwitchPhase(GamePhase.ScoreScreen);
             return;
+        }
+
+        _gameState.ComboTimerRemaining -= Time.deltaTime;
+
+        if (_gameState.ComboTimerRemaining <= 0f)
+        {
+            _gameState.ComboTimerRemaining = 0f;
+            _gameState.CurrentCombo = 0;
         }
 
         if (_gameState.Phase is GamePhase.WaitingForChallenge)
@@ -238,29 +234,35 @@ public class GameManager : MonoBehaviour
         switch (oldPhase)
         {
             case GamePhase.ScoreScreen:
-                _gameplayScoreGroup.SetVisible(true);
-                _scoreScreenCamera.enabled = false;
-                _timeText.SetActive(false);
                 break;
         }
 
         switch (newPhase)
         {
             case GamePhase.ScoreScreen:
-                _gameplayScoreGroup.SetVisible(false);
-                _scoreScreenCamera.enabled = true;
-                _timeText.SetActive(true);
-                _scoreScreenScoreText.text = _score.ToString();
                 _onGameEnd?.Invoke();
                 break;
             case GamePhase.StartingGame:
                 SwitchPhase(GamePhase.WaitingForChallenge);
                 _stateDebug = _gameState;
-                _timeLeft = _setup.Time;
-                _score = 0;
+                _gameState.ResetState(_setup);
                 _onGameStart?.Invoke();
                 break;
         }
+    }
+
+    private void AddCombo()
+    {
+        _gameState.CurrentCombo++;
+        if (_gameState.CurrentCombo > _gameState.ComboHigh)
+        {
+            _gameState.ComboHigh = _gameState.CurrentCombo;
+        }
+    }
+
+    private void RefreshComboTimer(float newTimeRemaining)
+    {
+        _gameState.ComboTimerRemaining = Mathf.Max(_gameState.ComboTimerRemaining, newTimeRemaining);
     }
 
     private void OnDrawGizmos()

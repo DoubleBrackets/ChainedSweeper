@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Challenges;
 using DevTools;
 using Input;
 using Map;
@@ -25,6 +26,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameUI _gameUI;
+
+    [SerializeField]
+    private ChallengePatternRoster _patternRoster;
 
     [Header("Debug")]
 
@@ -191,15 +195,23 @@ public class GameManager : MonoBehaviour
         if (_gameState.Phase is GamePhase.WaitingForChallenge &&
             Time.time - _gameState.TimeSinceChallengeDone >= _setup.DelayBetweenChallenge)
         {
+            ChallengeRosterEntry pattern = _patternRoster.GetPattern();
+            var parity = 1;
+            if (!pattern.BlockSymmetry)
+            {
+                parity = Random.Range(0, 2) == 0 ? -1 : 1;
+            }
+
             Debug.Log("Starting new challenge");
             // Create a new challenge
             List<ChallengeStep> challengeNodes = new();
-            SweepNode nextNode = _gameState.GetRandomSweepNode();
+            SweepNode nextNode = _gameState.GetRandomSweepNode(out int nodeIndex);
             challengeNodes.Add(ChallengeStep.CreateStep(nextNode, nextNode));
 
-            for (var i = 0; i < 2; i++)
+            foreach (ChallengePatternStep step in pattern.PatternSO.Steps)
             {
-                SweepNode connectTo = nextNode.GetRandomAdjacentNode();
+                nodeIndex += step.StepDirection * parity;
+                SweepNode connectTo = _gameState.GetNodeLoopedIndex(nodeIndex, out nodeIndex);
 
                 challengeNodes.Add(ChallengeStep.CreateStep(nextNode, connectTo));
                 nextNode = connectTo;

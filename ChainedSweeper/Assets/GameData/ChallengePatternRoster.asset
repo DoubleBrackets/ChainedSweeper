@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a67fd9b8e637413d9e45a7cb996bf401, type: 3}
+  m_Name: ChallengePatternRoster
+  m_EditorClassIdentifier: Assembly-CSharp::Challenges.ChallengePatternRoster
+  <Rosters>k__BackingField:
+  - BlockSymmetry: 0
+    PatternSO: {fileID: 11400000, guid: 04965969f0fc4784c96fc60f8cb626f0, type: 2}
+    Weight: 2
+  - BlockSymmetry: 0
+    PatternSO: {fileID: 11400000, guid: 77f3a99a777f32145a6d173b06eb5db0, type: 2}
+    Weight: 2
+  - BlockSymmetry: 0
+    PatternSO: {fileID: 11400000, guid: 62353928e124c2e429c240eae6b8a65e, type: 2}
+    Weight: 2
+  - BlockSymmetry: 0
+    PatternSO: {fileID: 11400000, guid: 305a4a180ba3efc4b8d756d70efd99de, type: 2}
+    Weight: 2
+  - BlockSymmetry: 0
+    PatternSO: {fileID: 11400000, guid: c759f75c509d5a84d8cdb7668ff37f75, type: 2}
+    Weight: 1

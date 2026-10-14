@@ -144,7 +144,7 @@ Material:
     - _Color0_A: {r: 0.6, g: 0.8039216, b: 1, a: 1}
     - _Color0_B: {r: 1, g: 1, b: 1, a: 1}
     - _Color1_A: {r: 1, g: 1, b: 1, a: 1}
-    - _Color1_B: {r: 0.5803922, g: 0.2509804, b: 0.7254902, a: 1}
+    - _Color1_B: {r: 0.8784314, g: 0.1764706, b: 0.3372549, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _ScaleA: {r: -50, g: 50, b: 0, a: 0}
     - _ScaleB: {r: 50, g: 50, b: 0, a: 0}

@@ -43,14 +43,16 @@ public class GameState
         return false;
     }
 
-    public SweepNode GetRandomSweepNode()
+    public SweepNode GetRandomSweepNode(out int index)
     {
         if (Setup.SweepNodes.Count == 0)
         {
+            index = -1;
             return null;
         }
 
-        return Setup.SweepNodes[Random.Range(0, Setup.SweepNodes.Count)];
+        index = Random.Range(0, Setup.SweepNodes.Count);
+        return Setup.SweepNodes[index];
     }
 
     public bool TryGetCurrentChallenge(out Challenge challenge)
@@ -73,6 +75,22 @@ public class GameState
         ComboHigh = 0;
         ComboTimerRemaining = setup.InitialComboTimer;
         TimeSinceChallengeDone = 0;
+    }
+
+    public SweepNode GetNodeLoopedIndex(int nodeIndex, out int loopedIndex)
+    {
+        loopedIndex = nodeIndex;
+        int count = Setup.SweepNodes.Count;
+        if (loopedIndex < 0)
+        {
+            loopedIndex = count + loopedIndex;
+        }
+        else if (loopedIndex >= count)
+        {
+            loopedIndex %= count;
+        }
+
+        return Setup.SweepNodes[loopedIndex];
     }
 }
 

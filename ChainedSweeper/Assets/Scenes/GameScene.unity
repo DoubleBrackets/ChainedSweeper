@@ -381,8 +381,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4290332501
-  m_fontColor: {r: 0.33333334, g: 0.2784314, b: 0.7254902, a: 1}
+    rgba: 4284497113
+  m_fontColor: {r: 0.8490566, g: 0.23629406, b: 0.3768692, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7352,6 +7352,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SweepNode
       objectReference: {fileID: 0}
+    - target: {fileID: 5680633546765017678, guid: 50a4cc2df9913ad42b3e4536a18d3fb0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 6057687224063058137, guid: 50a4cc2df9913ad42b3e4536a18d3fb0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3
@@ -7468,13 +7472,14 @@ MonoBehaviour:
     - {fileID: 457105851}
     - {fileID: 848384520}
     - {fileID: 938381583}
-    Time: 25
+    Time: 60
     ComboTimerOnNodeSwept: 1
     ComboTimerOnReload: 4
     InitialComboTimer: 4
     ComboTimerOnCompleteChallenge: 4
     DelayBetweenChallenge: 1
   _gameUI: {fileID: 1612885899}
+  _patternRoster: {fileID: 11400000, guid: 25b18acef94f5cc43b27c4f541246204, type: 2}
   _stateDebug:
     PlayerState:
       BroomCharges: 0
@@ -7492,7 +7497,7 @@ MonoBehaviour:
     LastReloadTime: 0
     ComboTimerRemaining: 0
     TimeLeft: 0
-    TimeSinceLastChallenge: 0
+    TimeSinceChallengeDone: 0
     Score: 0
     CurrentCombo: 0
     ComboHigh: 0
@@ -8553,7 +8558,7 @@ MeshRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: d35f63734a0232a489513d26728428a3, type: 2}
-  - {fileID: 2100000, guid: 3c3ac6a175845ab4eb7d360cb70ff722, type: 2}
+  - {fileID: 2100000, guid: 98dc393ec051dc84390ba9c28f4457a2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9278,7 +9283,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4283108621
-  m_fontColor: {r: 0.050980397, g: 0.050980397, b: 0.29411766, a: 1}
+  m_fontColor: {r: 0.8509804, g: 0.23529412, b: 0.3764706, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:

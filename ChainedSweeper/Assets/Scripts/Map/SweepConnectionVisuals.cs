@@ -7,6 +7,7 @@ namespace Map
     {
         None,
         Unswept,
+        AfterNext,
         Next,
         Swept
     }

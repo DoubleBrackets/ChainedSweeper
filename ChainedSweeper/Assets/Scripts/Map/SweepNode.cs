@@ -17,6 +17,9 @@ namespace Map
         [SerializeField]
         private GameObject _inactiveObject;
 
+        [SerializeField]
+        private ParticleSystem _sweptParticles;
+
         public List<SweepNode> AdjacentNodes => _adjacentNodes;
 
         public Vector3 Pos => transform.position;
@@ -54,14 +57,14 @@ namespace Map
 
             foreach (ChallengeStep step in relevantSteps)
             {
-                UpdateStepVisual(step);
+                UpdateStepVisual(step, challenge);
             }
 
             _activeObject.SetActive(relevantSteps.Count > 0);
             _inactiveObject.SetActive(relevantSteps.Count == 0);
         }
 
-        private void UpdateStepVisual(ChallengeStep step)
+        private void UpdateStepVisual(ChallengeStep step, Challenge challenge)
         {
             if (!_stepVisuals.TryGetValue(step, out SweepConnectionVisuals visuals))
             {
@@ -71,7 +74,11 @@ namespace Map
                 visuals = newVisual;
             }
 
-            if (step.IsNext)
+            if (challenge.IsAfterNext(step))
+            {
+                visuals.SetIndicator(LineIndicator.AfterNext, step.From.Pos, step.To.Pos);
+            }
+            else if (challenge.IsNext(step))
             {
                 visuals.SetIndicator(LineIndicator.Next, step.From.Pos, step.To.Pos);
             }
@@ -93,10 +100,13 @@ namespace Map
             }
 
             _stepVisuals.Clear();
+            _activeObject.SetActive(false);
+            _inactiveObject.SetActive(true);
         }
 
         public void ChallengeEnded()
         {
+            _sweptParticles?.Play();
             CleanupVisuals();
         }
     }

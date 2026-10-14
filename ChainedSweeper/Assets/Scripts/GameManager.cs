@@ -115,8 +115,10 @@ public class GameManager : MonoBehaviour
                 {
                     _onFinishChallenge?.Invoke();
                     _gameState.Challenges.Remove(challenge);
+                    _gameState.TimeSinceChallengeDone = Time.time;
+
                     SwitchPhase(GamePhase.WaitingForChallenge);
-                    foreach (SweepNode node in _gameState.Setup.SweepNodes)
+                    foreach (SweepNode node in challenge.InvolvedNodes)
                     {
                         node.ChallengeEnded();
                     }
@@ -186,7 +188,8 @@ public class GameManager : MonoBehaviour
             _gameState.CurrentCombo = 0;
         }
 
-        if (_gameState.Phase is GamePhase.WaitingForChallenge)
+        if (_gameState.Phase is GamePhase.WaitingForChallenge &&
+            Time.time - _gameState.TimeSinceChallengeDone >= _setup.DelayBetweenChallenge)
         {
             Debug.Log("Starting new challenge");
             // Create a new challenge

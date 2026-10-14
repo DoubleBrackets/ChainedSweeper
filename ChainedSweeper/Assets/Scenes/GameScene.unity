@@ -7473,6 +7473,7 @@ MonoBehaviour:
     ComboTimerOnReload: 4
     InitialComboTimer: 4
     ComboTimerOnCompleteChallenge: 4
+    DelayBetweenChallenge: 1
   _gameUI: {fileID: 1612885899}
   _stateDebug:
     PlayerState:
@@ -7486,10 +7487,12 @@ MonoBehaviour:
       ComboTimerOnReload: 0
       InitialComboTimer: 0
       ComboTimerOnCompleteChallenge: 0
+      DelayBetweenChallenge: 0
     Challenges: []
     LastReloadTime: 0
     ComboTimerRemaining: 0
     TimeLeft: 0
+    TimeSinceLastChallenge: 0
     Score: 0
     CurrentCombo: 0
     ComboHigh: 0

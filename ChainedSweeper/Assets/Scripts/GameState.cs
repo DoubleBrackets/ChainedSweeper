@@ -22,6 +22,7 @@ public class GameState
     public float LastReloadTime;
     public float ComboTimerRemaining;
     public float TimeLeft;
+    public float TimeSinceChallengeDone;
     public int Score;
     public int CurrentCombo;
     public int ComboHigh;
@@ -71,6 +72,7 @@ public class GameState
         CurrentCombo = 0;
         ComboHigh = 0;
         ComboTimerRemaining = setup.InitialComboTimer;
+        TimeSinceChallengeDone = 0;
     }
 }
 
@@ -101,6 +103,7 @@ public class GameSetup
     public float ComboTimerOnReload;
     public float InitialComboTimer;
     public float ComboTimerOnCompleteChallenge;
+    public float DelayBetweenChallenge;
 }
 
 [Serializable]
@@ -109,7 +112,6 @@ public class ChallengeStep
     public SweepNode From;
     public SweepNode To;
 
-    public bool IsNext;
     public bool Completed;
 
     public static ChallengeStep CreateStep(SweepNode from, SweepNode to)
@@ -118,8 +120,7 @@ public class ChallengeStep
         {
             From = from,
             To = to,
-            Completed = false,
-            IsNext = false
+            Completed = false
         };
     }
 }
@@ -129,17 +130,26 @@ public class Challenge
 {
     public Challenge(List<ChallengeStep> steps)
     {
+        InvolvedNodes = new HashSet<SweepNode>();
         ChallengeSteps = steps;
-        ChallengeSteps[0].IsNext = true;
+
+        foreach (ChallengeStep step in ChallengeSteps)
+        {
+            InvolvedNodes.Add(step.From);
+            InvolvedNodes.Add(step.To);
+        }
     }
 
     public List<ChallengeStep> ChallengeSteps;
+    public HashSet<SweepNode> InvolvedNodes;
+    public int StepIndex;
 
     public bool TryGetNextStep(out ChallengeStep challengeStep)
     {
-        foreach (ChallengeStep step in ChallengeSteps)
+        for (var i = 0; i < ChallengeSteps.Count; i++)
         {
-            if (step.IsNext)
+            ChallengeStep step = ChallengeSteps[i];
+            if (i == StepIndex)
             {
                 challengeStep = step;
                 return true;
@@ -160,13 +170,12 @@ public class Challenge
         for (var i = 0; i < ChallengeSteps.Count; i++)
         {
             ChallengeStep step = ChallengeSteps[i];
-            if (step.IsNext)
+            if (i == StepIndex)
             {
                 step.Completed = true;
-                step.IsNext = false;
                 if (i < ChallengeSteps.Count - 1)
                 {
-                    ChallengeSteps[i + 1].IsNext = true;
+                    StepIndex++;
                     didFinish = false;
                     return;
                 }
@@ -178,6 +187,16 @@ public class Challenge
 
         Debug.LogWarning("Tried to complete next step when there was none!");
         didFinish = false;
+    }
+
+    public bool IsAfterNext(ChallengeStep step)
+    {
+        return ChallengeSteps.IndexOf(step) == StepIndex + 1;
+    }
+
+    public bool IsNext(ChallengeStep step)
+    {
+        return ChallengeSteps.IndexOf(step) == StepIndex;
     }
 }
 

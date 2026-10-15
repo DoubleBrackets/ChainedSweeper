@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
         _gameState = new GameState(_setup);
         _gameState.Phase = GamePhase.None;
 
-        _protag.Initialize(_inputClient);
+        _protag.Initialize();
         _inputClient.Initialize();
 
         _inputClient.OnReload += HandleReload;
@@ -115,6 +115,7 @@ public class GameManager : MonoBehaviour
                 RefreshComboTimer(_setup.ComboTimerOnNodeSwept);
                 AddCombo();
                 _gameState.Score++;
+                _protag.OnSweep(nodeSwept);
                 if (didFinish)
                 {
                     _onFinishChallenge?.Invoke();

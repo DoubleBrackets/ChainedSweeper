@@ -1,18 +1,27 @@
+using Map;
 using UnityEngine;
 
 namespace Protag
 {
     public class ProtagController : MonoBehaviour
     {
-        private IGameInput _gameInput;
+        [SerializeField]
+        private Transform _body;
 
-        public void Initialize(IGameInput gameInput)
+        [SerializeField]
+        private Vector3 _offset;
+
+        public void Initialize()
         {
-            _gameInput = gameInput;
         }
 
         public void Cleanup()
         {
+        }
+
+        public void OnSweep(SweepNode node)
+        {
+            _body.transform.position = node.Pos + _offset;
         }
     }
 }

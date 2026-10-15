@@ -17,7 +17,7 @@
                 },
                 {
                     "name": "HitNode",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "461d9f06-075b-4f7f-aee9-157c7064114d",
                     "expectedControlType": "",
                     "processors": "",

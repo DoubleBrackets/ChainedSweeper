@@ -526,8 +526,8 @@ MonoBehaviour:
   switchSettingsMigration: 1
   HasSourceProject: 1
   HasPlatforms: 1
-  sourceProjectPath: ../ChainedSweeper_FMOD/ChainedSweeper_FMOD.fspro
-  sourceBankPath: ../ChainedSweeper_FMOD/Build
+  sourceProjectPath: ../ChainedSweeperFMOD/ChainedSweeperFMOD.fspro
+  sourceBankPath: ../ChainedSweeperFMOD/Build
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 1
   ShowBankRefreshWindow: 1

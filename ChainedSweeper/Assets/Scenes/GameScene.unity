@@ -299,11 +299,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 665101475
-      Data2: 1330200961
-      Data3: 1357072318
-      Data4: 1827940527
-    Path: event:/StartGame
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
@@ -7441,17 +7441,17 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: -167427356
-      Data2: 1326910008
-      Data3: 1570594721
-      Data4: -880167398
+      Data1: -742983913
+      Data2: 1150637581
+      Data3: -1177494346
+      Data4: 1411276670
     Path: event:/Reload
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
   AllowFadeout: 1
   TriggerOnce: 0
-  Preload: 0
+  Preload: 1
   NonRigidbodyVelocity: 0
   Params: []
   OverrideAttenuation: 0
@@ -7796,13 +7796,13 @@ MonoBehaviour:
   _onReload:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1030734771}
-        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
-        m_MethodName: Play
-        m_Mode: 1
+      - m_Target: {fileID: 1355980810}
+        m_TargetAssemblyTypeName: FMODPlayer, Assembly-CSharp
+        m_MethodName: PlayOneshot
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1030734771}
+          m_ObjectArgumentAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7811,13 +7811,13 @@ MonoBehaviour:
   _onSweepNode:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1280423667}
-        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
-        m_MethodName: Play
-        m_Mode: 1
+      - m_Target: {fileID: 1355980810}
+        m_TargetAssemblyTypeName: FMODPlayer, Assembly-CSharp
+        m_MethodName: PlayOneshot
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1280423667}
+          m_ObjectArgumentAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -7826,13 +7826,13 @@ MonoBehaviour:
   _onFinishChallenge:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1819792974}
-        m_TargetAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
-        m_MethodName: Play
-        m_Mode: 1
+      - m_Target: {fileID: 1355980810}
+        m_TargetAssemblyTypeName: FMODPlayer, Assembly-CSharp
+        m_MethodName: PlayOneshot
+        m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_ObjectArgument: {fileID: 1819792974}
+          m_ObjectArgumentAssemblyTypeName: FMODUnity.StudioEventEmitter, FMODUnity
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -8111,17 +8111,17 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 1955113059
-      Data2: 1308228216
-      Data3: -971250045
-      Data4: 1777086626
-    Path: event:/NodeHit
+      Data1: -1775534043
+      Data2: 1313514603
+      Data3: -1550536060
+      Data4: 1124206972
+    Path: event:/Sweep
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
   AllowFadeout: 1
   TriggerOnce: 0
-  Preload: 0
+  Preload: 1
   NonRigidbodyVelocity: 0
   Params: []
   OverrideAttenuation: 0
@@ -8764,6 +8764,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1355980809}
+  - component: {fileID: 1355980810}
   m_Layer: 0
   m_Name: SFX
   m_TagString: Untagged
@@ -8791,6 +8792,18 @@ Transform:
   - {fileID: 1627896535}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1355980810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1355980808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 424171f0f6fb18f4e91edbd63009b4bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FMODPlayer
 --- !u!1 &1379982294
 GameObject:
   m_ObjectHideFlags: 0
@@ -9177,11 +9190,11 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 492109624
-      Data2: 1183733826
-      Data3: -119186267
-      Data4: -542092503
-    Path: event:/GameEnd
+      Data1: 0
+      Data2: 0
+      Data3: 0
+      Data4: 0
+    Path: 
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
@@ -9240,17 +9253,17 @@ MonoBehaviour:
   CollisionTag: 
   EventReference:
     Guid:
-      Data1: 150573545
-      Data2: 1204257773
-      Data3: -1781874246
-      Data4: 436955136
-    Path: event:/ChallengeFinish
+      Data1: 1555418747
+      Data2: 1207664254
+      Data3: -605339246
+      Data4: -470511131
+    Path: event:/ChallengeOver
   Event: 
   EventPlayTrigger: 0
   EventStopTrigger: 0
   AllowFadeout: 1
   TriggerOnce: 0
-  Preload: 0
+  Preload: 1
   NonRigidbodyVelocity: 0
   Params: []
   OverrideAttenuation: 0

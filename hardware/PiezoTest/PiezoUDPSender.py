@@ -29,11 +29,14 @@ if args.sound:
 SERIAL_PORT = "COM7" # "COM3"
 BAUD_RATE = 9600
 UDP_IP = "127.0.0.1"
+BOUND_UDP_PORT = 5003 # port this server binds to
 UDP_PORT = 5002 # port the game is bound to
 HEADER_BYTE = 1 # 1 for a sweep as defined by above protocol
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind((UDP_IP, BOUND_UDP_PORT))
+sock.setblocking(False)
 dest = (UDP_IP, UDP_PORT)
 
 serial_connection = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=3)
@@ -41,6 +44,16 @@ print(f"Listening on {SERIAL_PORT} baud {BAUD_RATE}, forwarding to {UDP_IP}:{UDP
 
 try:
     while True:
+        # Read from game
+        try:
+            data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
+        except socket.error:
+            data = []
+
+        if len(data):
+            print("Writing to serial:", list(data))
+            serial_connection.write(data)
+
         data = serial_connection.readline()
         line = data.decode("utf-8", errors="ignore").strip()
         if not line.isdigit():

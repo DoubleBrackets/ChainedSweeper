@@ -1005,7 +1005,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Protag.ProtagController
   _body: {fileID: 1379982295}
-  _offset: {x: -1, y: 0, z: 0.2}
+  _offset: {x: 1, y: 0, z: 0.2}
+  _spriteRen: {fileID: 909461891}
+  _normalSprite: {fileID: 21300000, guid: c52454b18db97c347a3748bf07bd6768, type: 3}
+  _chargedSprite: {fileID: 21300000, guid: 4a600025d04427c46b97aee3447379ce, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -2017,9 +2020,9 @@ ParticleSystem:
     enabled: 1
     startLifetime:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 0.3
-      minScalar: 5
+      minScalar: 0.2
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -2772,7 +2775,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 25
+      scalar: 10
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -5971,7 +5974,7 @@ ParticleSystem:
       maxGradient:
         serializedVersion: 2
         key0: {r: 0.6, g: 0.8000001, b: 0.9921569, a: 1}
-        key1: {r: 0.2971698, g: 0.6073371, b: 1, a: 1}
+        key1: {r: 0.47058827, g: 0.9058824, b: 1, a: 1}
         key2: {r: 1, g: 1, b: 1, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -6743,7 +6746,7 @@ Transform:
   m_GameObject: {fileID: 729760900}
   serializedVersion: 2
   m_LocalRotation: {x: 0.3812272, y: -0.08052145, z: 0.033353075, w: 0.9203639}
-  m_LocalPosition: {x: 0.983, y: 0.317, z: 0.386}
+  m_LocalPosition: {x: 1.104, y: 0.907, z: 1.019}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7246,7 +7249,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1140265547, guid: b4acdd9535f0400419794c42eec25dcd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 4a600025d04427c46b97aee3447379ce, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -7731,6 +7734,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1212823624}
   - component: {fileID: 1212823623}
+  - component: {fileID: 1212823625}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -7772,6 +7776,7 @@ MonoBehaviour:
     DelayBetweenChallenge: 1
   _gameUI: {fileID: 1612885899}
   _patternRoster: {fileID: 11400000, guid: 25b18acef94f5cc43b27c4f541246204, type: 2}
+  _boardClientOut: {fileID: 1212823625}
   _stateDebug:
     PlayerState:
       BroomCharges: 0
@@ -7883,6 +7888,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1212823625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1212823622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b1357bfcb554cceb416d7928dc8d528, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Input.BoardClientOut
+  _port: 5003
 --- !u!1 &1267308541
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading;
 using Cysharp.Threading.Tasks;
@@ -71,14 +69,14 @@ namespace Input
         private async UniTaskVoid ReadLoop(CancellationToken token)
         {
             Debug.Log($"Starting UDP Client bound to port {_bindingPort}");
-            bool alreadyinuse = IPGlobalProperties.GetIPGlobalProperties().GetActiveUdpListeners()
+            /*bool alreadyinuse = IPGlobalProperties.GetIPGlobalProperties().GetActiveUdpListeners()
                 .Any(p => p.Port == _bindingPort);
 
             if (alreadyinuse)
             {
                 Debug.LogWarning(
                     $"Port {_bindingPort} is already in use! The loop will begin reading when it is freed.");
-            }
+            }*/
 
             UdpClient client = new(_bindingPort);
             Debug.Log($"Starting read loop bound to port {_bindingPort}");

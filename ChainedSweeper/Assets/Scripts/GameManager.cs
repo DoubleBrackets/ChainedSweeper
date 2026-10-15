@@ -30,6 +30,9 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private ChallengePatternRoster _patternRoster;
 
+    [SerializeField]
+    private BoardClientOut _boardClientOut;
+
     [Header("Debug")]
 
     [SerializeField]
@@ -116,6 +119,7 @@ public class GameManager : MonoBehaviour
                 AddCombo();
                 _gameState.Score++;
                 _protag.OnSweep(nodeSwept);
+                _boardClientOut.SendLedSignal(index + 1);
                 if (didFinish)
                 {
                     _onFinishChallenge?.Invoke();
@@ -130,6 +134,7 @@ public class GameManager : MonoBehaviour
 
                     _gameState.UseBroomCharge();
                     RefreshComboTimer(_setup.ComboTimerOnCompleteChallenge);
+                    _boardClientOut.SendLedSignal(0);
                 }
             }
         }
@@ -170,6 +175,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        _protag.SetVisuals(_gameState);
         _gameUI.UpdateUI(_gameState);
 
         if (!_gameState.Phase.IsGameplayPhase())

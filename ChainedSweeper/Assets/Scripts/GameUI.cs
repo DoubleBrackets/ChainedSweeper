@@ -53,8 +53,11 @@ public class GameUI : MonoBehaviour
 
         _scoreScreenCamera.enabled = state.Phase is GamePhase.ScoreScreen;
         _timeText.SetActive(state.Phase is GamePhase.ScoreScreen);
-        _scoreScreenScoreText.text = state.Score.ToString();
-        _maxComboText.text = state.ComboHigh.ToString();
+        if (state.Phase is GamePhase.ScoreScreen)
+        {
+            _scoreScreenScoreText.text = state.Score.ToString();
+            _maxComboText.text = state.ComboHigh.ToString();
+        }
 
         _sliderBlock.SetFloat(ThresholdShaderProp, state.ComboTimerRemaining / state.Setup.InitialComboTimer);
         _comboTimerSlider.SetPropertyBlock(_sliderBlock);

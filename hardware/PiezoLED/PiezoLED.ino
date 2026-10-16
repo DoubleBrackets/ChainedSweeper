@@ -33,6 +33,7 @@ int sensorReading[NUM_SENSORS];
 bool inActivity[NUM_SENSORS];
 unsigned long activityStart[NUM_SENSORS];
 unsigned long lastActiveTime[NUM_SENSORS];
+int lastSentIndex = -1;
 
 // LED functions
 // first LED of a segment
@@ -184,11 +185,16 @@ void loop() {
   unsigned long now = millis();
 
   for (int i = 0; i < NUM_SENSORS; i++) {
+    if (i == lastSentIndex)
+    {
+      continue;
+    }
     sensorReading[i] = analogRead(piezoSensor[i]);
 
     bool isActive = (sensorReading[i] >= threshold);
 
     if (isActive) {
+      lastSentIndex = i;
       Serial.println(i);
       lastActiveTime[i] = now;
     }

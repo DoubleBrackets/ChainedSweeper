@@ -68,7 +68,6 @@ def led_main():
     print(f"Starting led listen loop at {UDP_IP}:{BOUND_UDP_PORT}")
     while not exiting.is_set():
         # Read from game
-        print("Waiting for game LED UDP...")
         try:
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
         except socket.error:

@@ -350,7 +350,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 5, y: 5}
+  m_SizeDelta: {x: 15, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &122281721
 MonoBehaviour:
@@ -7768,7 +7768,7 @@ MonoBehaviour:
     - {fileID: 457105851}
     - {fileID: 848384520}
     - {fileID: 938381583}
-    Time: 60
+    Time: 120
     ComboTimerOnNodeSwept: 1
     ComboTimerOnReload: 4
     InitialComboTimer: 4

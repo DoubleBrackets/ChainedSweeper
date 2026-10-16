@@ -23,7 +23,7 @@ TBlendType    currentBlending = LINEARBLEND; // note to self currentBlending can
 // PIEZO SETUP STUFF
 const int NUM_SENSORS = 8; 
 const int piezoSensor[NUM_SENSORS] = {A0, A1, A2, A3, A4, A5, A6, A7};
-const int threshold = 70; 
+const int threshold = 40; 
 
 const unsigned long MIN_SWEEP_DURATION = 20; // ms - must stay active at least this long
 const unsigned long MAX_GAP = 10;             // ms - allowed dropout within a sweep before it's considered ended
@@ -187,19 +187,18 @@ void loop() {
     sensorReading[i] = analogRead(piezoSensor[i]);
 
     bool isActive = (sensorReading[i] >= threshold);
-    bool sweepDetected = false;
 
     if (isActive) {
-      if (!inActivity[i]) {
-        // just started a new activity window
-        inActivity[i] = true;
-        activityStart[i] = now;
-      }
-      sweepDetected = true; // long enough - call it a sweep
-      // Serial.print("Sweep at sensor: ");
       Serial.println(i);
       lastActiveTime[i] = now;
     }
+
+    // FOR DEBUGGING ONLY
+    // Serial.print("sensor");
+    // Serial.print(i + 1);
+    // Serial.print(":");
+    // Serial.print(sensorReading[i]);
+    // Serial.print(i < NUM_SENSORS - 1 ? "," : "\n");
 
   }
 
@@ -212,5 +211,5 @@ void loop() {
   RefreshSweepLEDs(offset);
   FastLED.delay(1000 / UPDATES_PER_SECOND);
 
-  delay(5); // fast sampling keeps duration tracking accurate
+  delay(3); // fast sampling keeps duration tracking accurate
 }

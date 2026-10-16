@@ -13,11 +13,15 @@ notes:
 
 """
 
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import re
 import socket
+from time import sleep
 
 import serial
 import argparse
+import threading
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--sound', action='store_true')
@@ -35,16 +39,36 @@ HEADER_BYTE = 1 # 1 for a sweep as defined by above protocol
 
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((UDP_IP, BOUND_UDP_PORT))
 sock.setblocking(False)
+sock.bind((UDP_IP, BOUND_UDP_PORT))
 dest = (UDP_IP, UDP_PORT)
 
-serial_connection = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=3)
-print(f"Listening on {SERIAL_PORT} baud {BAUD_RATE}, forwarding to {UDP_IP}:{UDP_PORT}")
 
-try:
-    while True:
+serial_connection = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=3)
+
+def piezo_main():
+    print(f"Starting serial/udp piezo loop at {SERIAL_PORT}")
+    while not exiting.is_set():
+        data = serial_connection.readline()
+        line = data.decode("utf-8", errors="ignore").strip()
+        if not line.isdigit():
+            print(f"Junk Data -> Sent {line}")
+            continue # ignore any corrutped data
+
+        sensor_num = int(line)
+        packet = bytes([HEADER_BYTE, sensor_num])
+        sock.sendto(packet, dest)
+        print(f"Sweep @ {sensor_num} -> Sent {list(packet)}")
+
+        if args.sound:
+            playsound('guzhen.mp3') 
+
+
+def led_main():
+    print(f"Starting led listen loop at {UDP_IP}:{BOUND_UDP_PORT}")
+    while not exiting.is_set():
         # Read from game
+        print("Waiting for game LED UDP...")
         try:
             data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
         except socket.error:
@@ -54,21 +78,19 @@ try:
             print("Writing to serial:", list(data))
             serial_connection.write(data)
 
-        data = serial_connection.readline()
-        line = data.decode("utf-8", errors="ignore").strip()
-        if not line.isdigit():
-            continue # ignore any corrutped data
 
-        sensor_num = int(line)
-        packet = bytes([HEADER_BYTE, sensor_num])
-        sock.sendto(packet, dest)
-        print(f"Sweep at sensor {sensor_num} -> Sent {list(packet)}")
-
-        if args.sound:
-            playsound('guzhen.mp3') 
+try:
+    exiting = threading.Event()
+    with ThreadPoolExecutor() as executor:
+        piezo_task = executor.submit(piezo_main)
+        led_task = executor.submit(led_main)
+        print(f"Listening on {SERIAL_PORT} baud {BAUD_RATE}, forwarding to {UDP_IP}:{UDP_PORT}")
+        while not exiting.is_set():
+            sleep(1)
 except KeyboardInterrupt:
-    pass
+    print("Caught keyboardInterrupt")
+    exiting.set()
 finally:
-    serial_connection.close()
+    print("Main thread finished")
     sock.close()
-
+    serial_connection.close()

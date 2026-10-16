@@ -134,7 +134,6 @@ public class GameManager : MonoBehaviour
 
                     _gameState.UseBroomCharge();
                     RefreshComboTimer(_setup.ComboTimerOnCompleteChallenge);
-                    _boardClientOut.SendLedSignal(0);
                 }
             }
         }
@@ -226,6 +225,7 @@ public class GameManager : MonoBehaviour
 
             _gameState.Challenges.Add(new Challenge(challengeNodes));
             SwitchPhase(GamePhase.ChallengeRunning);
+            _boardClientOut.SendLedSignal(0);
         }
 
         foreach (SweepNode node in _gameState.Setup.SweepNodes)

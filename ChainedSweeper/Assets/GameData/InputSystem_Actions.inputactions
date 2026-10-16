@@ -39,6 +39,17 @@
                 },
                 {
                     "name": "",
+                    "id": "8205e761-13a9-4672-81ae-089c11163caf",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "2793a611-ffe5-4997-9788-e0859527178d",
                     "path": "<Keyboard>/0",
                     "interactions": "",

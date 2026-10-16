@@ -50,6 +50,9 @@ public class GameManager : MonoBehaviour
     private UnityEvent _onFinishChallenge;
 
     [SerializeField]
+    private UnityEvent _onStartChallenge;
+
+    [SerializeField]
     private UnityEvent _onGameStart;
 
     [SerializeField]
@@ -226,6 +229,7 @@ public class GameManager : MonoBehaviour
             _gameState.Challenges.Add(new Challenge(challengeNodes));
             SwitchPhase(GamePhase.ChallengeRunning);
             _boardClientOut.SendLedSignal(0);
+            _onStartChallenge?.Invoke();
         }
 
         foreach (SweepNode node in _gameState.Setup.SweepNodes)

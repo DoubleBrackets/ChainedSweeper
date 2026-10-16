@@ -101,8 +101,8 @@ void FillLEDsFromSweepState(uint8_t offset)
     // light the sweep segment
     //int start = SegmentStart(currentSweepPoints[i]);
     //int end = start + LEDS_PER_SWEEP_SEGMENT;
-    int start = ledsPerSweepSeg[sweepPoint];
-    int end = ledsPerSweepSeg[sweepPoint+1];
+    int start = ledsPerSweepSeg[sweepPoint-1];
+    int end = ledsPerSweepSeg[sweepPoint];
 
     for (int j = start; j < end && j < NUM_LEDS; j++)
     {

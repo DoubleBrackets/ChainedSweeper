@@ -381,8 +381,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4284497113
-  m_fontColor: {r: 0.8490566, g: 0.23629406, b: 0.3768692, a: 1}
+    rgba: 4293039694
+  m_fontColor: {r: 0.30535775, g: 0.5871973, b: 0.8867924, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2021,8 +2021,8 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.3
-      minScalar: 0.2
+      scalar: 0.2
+      minScalar: 0.1
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5973,8 +5973,8 @@ ParticleSystem:
       maxColor: {r: 0.36320752, g: 1, b: 0.92878705, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.6, g: 0.8000001, b: 0.9921569, a: 1}
-        key1: {r: 0.47058827, g: 0.9058824, b: 1, a: 1}
+        key0: {r: 0, g: 0.5100002, b: 1, a: 1}
+        key1: {r: 0.6084906, g: 0.8403308, b: 1, a: 1}
         key2: {r: 1, g: 1, b: 1, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -6041,39 +6041,21 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0
-          inSlope: 1.0000001
-          outSlope: 1.0000001
+          value: 1
+          inSlope: 0
+          outSlope: 0
           tangentMode: 34
           weightedMode: 0
           inWeight: 0
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 0.40814868
-          value: 0.4081487
-          inSlope: 1
-          outSlope: 1
-          tangentMode: 34
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
-        - serializedVersion: 3
-          time: 0.8642561
-          value: 0.864256
-          inSlope: -2.683406
-          outSlope: -2.683406
-          tangentMode: 34
-          weightedMode: 0
-          inWeight: 0.33333334
-          outWeight: 0.33333334
+          outWeight: 0
         - serializedVersion: 3
           time: 1
-          value: 0
-          inSlope: -6.366812
-          outSlope: -6.366812
+          value: 1
+          inSlope: 0
+          outSlope: 0
           tangentMode: 34
           weightedMode: 0
-          inWeight: 0.33333334
+          inWeight: 0
           outWeight: 0
         m_PreInfinity: 2
         m_PostInfinity: 2
@@ -6746,7 +6728,7 @@ Transform:
   m_GameObject: {fileID: 729760900}
   serializedVersion: 2
   m_LocalRotation: {x: 0.3812272, y: -0.08052145, z: 0.033353075, w: 0.9203639}
-  m_LocalPosition: {x: 1.104, y: 0.907, z: 1.019}
+  m_LocalPosition: {x: 1.104, y: 0.602, z: 1.277}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

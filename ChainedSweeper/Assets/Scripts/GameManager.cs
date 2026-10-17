@@ -184,6 +184,7 @@ public class GameManager : MonoBehaviour
 
     private void EndGame()
     {
+        _gameState.ActiveChallenge = null;
         _inputClient.Cleanup();
         _inputClient.OnReload -= HandleReload;
         _inputClient.OnHitSweepNode -= HandleHitSweepNode;

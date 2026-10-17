@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Challenges.ChallengePatternRoster
   <Rosters>k__BackingField:
   - ChallengeSO: {fileID: 11400000, guid: 305a4a180ba3efc4b8d756d70efd99de, type: 2}
-    Weight: 2
+    Weight: 1
   - ChallengeSO: {fileID: 11400000, guid: db04c61055e8c1847bf0b801088136a5, type: 2}
     Weight: 1
   - ChallengeSO: {fileID: 11400000, guid: 8a2f94f2b8aad9f48903d16d38b86ddf, type: 2}
@@ -24,4 +24,8 @@ MonoBehaviour:
   - ChallengeSO: {fileID: 11400000, guid: b22ca14e8eb38e445bb3dd2f7046fef6, type: 2}
     Weight: 1
   - ChallengeSO: {fileID: 11400000, guid: 8ef197db8b710e4488c93daf28d36102, type: 2}
+    Weight: 1
+  - ChallengeSO: {fileID: 11400000, guid: 524caa5feee53a4499c4987a6a8bb286, type: 2}
+    Weight: 1
+  - ChallengeSO: {fileID: 11400000, guid: 9763155491ba14446916c3c9a656f8af, type: 2}
     Weight: 1

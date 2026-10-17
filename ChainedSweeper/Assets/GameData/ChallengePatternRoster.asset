@@ -13,18 +13,15 @@ MonoBehaviour:
   m_Name: ChallengePatternRoster
   m_EditorClassIdentifier: Assembly-CSharp::Challenges.ChallengePatternRoster
   <Rosters>k__BackingField:
-  - BlockSymmetry: 0
-    PatternSO: {fileID: 11400000, guid: 04965969f0fc4784c96fc60f8cb626f0, type: 2}
+  - ChallengeSO: {fileID: 11400000, guid: 305a4a180ba3efc4b8d756d70efd99de, type: 2}
     Weight: 2
-  - BlockSymmetry: 0
-    PatternSO: {fileID: 11400000, guid: 77f3a99a777f32145a6d173b06eb5db0, type: 2}
-    Weight: 2
-  - BlockSymmetry: 0
-    PatternSO: {fileID: 11400000, guid: 62353928e124c2e429c240eae6b8a65e, type: 2}
-    Weight: 2
-  - BlockSymmetry: 0
-    PatternSO: {fileID: 11400000, guid: 305a4a180ba3efc4b8d756d70efd99de, type: 2}
-    Weight: 2
-  - BlockSymmetry: 0
-    PatternSO: {fileID: 11400000, guid: c759f75c509d5a84d8cdb7668ff37f75, type: 2}
+  - ChallengeSO: {fileID: 11400000, guid: db04c61055e8c1847bf0b801088136a5, type: 2}
+    Weight: 1
+  - ChallengeSO: {fileID: 11400000, guid: 8a2f94f2b8aad9f48903d16d38b86ddf, type: 2}
+    Weight: 1
+  - ChallengeSO: {fileID: 11400000, guid: 9c9149bf994741d4483624d613339378, type: 2}
+    Weight: 1
+  - ChallengeSO: {fileID: 11400000, guid: b22ca14e8eb38e445bb3dd2f7046fef6, type: 2}
+    Weight: 1
+  - ChallengeSO: {fileID: 11400000, guid: 8ef197db8b710e4488c93daf28d36102, type: 2}
     Weight: 1

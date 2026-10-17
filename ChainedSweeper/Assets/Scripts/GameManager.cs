@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviour
     private UnityEvent _onSweepNode;
 
     [SerializeField]
-    private UnityEvent _onFinishChallenge;
+    private UnityEvent _onFinishPattern;
 
     [SerializeField]
     private UnityEvent _onStartChallenge;
@@ -86,6 +86,13 @@ public class GameManager : MonoBehaviour
 
         _inputClient.OnReload += HandleReload;
         _inputClient.OnHitSweepNode += HandleHitSweepNode;
+
+        var i = 0;
+        foreach (SweepNode node in _setup.SweepNodes)
+        {
+            node.SetIndex(i);
+            i++;
+        }
     }
 
     private void HandleHitSweepNode(int index)
@@ -112,33 +119,41 @@ public class GameManager : MonoBehaviour
 
         SweepNode nodeSwept = _gameState.Setup.SweepNodes[index];
 
-        if (challenge.TryGetNextStep(out ChallengeStep step))
+        foreach (PatternInstance pattern in challenge.Patterns)
         {
-            if (step.To == nodeSwept)
+            if (pattern.TryGetNextStep(out PatternStep step))
             {
-                challenge.CompleteNextStep(out bool didFinish);
-                _onSweepNode?.Invoke();
-                RefreshComboTimer(_setup.ComboTimerOnNodeSwept);
-                AddCombo();
-                _gameState.Score++;
-                _protag.OnSweep(nodeSwept);
-                _boardClientOut.SendLedSignal(index + 1);
-                if (didFinish)
+                if (step.To == nodeSwept)
                 {
-                    _onFinishChallenge?.Invoke();
-                    _gameState.Challenges.Remove(challenge);
-                    _gameState.TimeSinceChallengeDone = Time.time;
-
-                    SwitchPhase(GamePhase.WaitingForChallenge);
-                    foreach (SweepNode node in challenge.InvolvedNodes)
+                    pattern.CompleteNextStep(out bool finishedPattern);
+                    _onSweepNode?.Invoke();
+                    RefreshComboTimer(_setup.ComboTimerOnNodeSwept);
+                    AddCombo();
+                    _gameState.Score++;
+                    _protag.OnSweep(nodeSwept);
+                    _boardClientOut.SendLedSignal(index + 1);
+                    if (finishedPattern)
                     {
-                        node.ChallengeEnded();
-                    }
+                        _onFinishPattern?.Invoke();
 
-                    _gameState.UseBroomCharge();
-                    RefreshComboTimer(_setup.ComboTimerOnCompleteChallenge);
+                        foreach (SweepNode node in pattern.InvolvedNodes)
+                        {
+                            node.PatternEnded();
+                        }
+
+                        _gameState.UseBroomCharge();
+                        RefreshComboTimer(_setup.ComboTimerOnCompleteChallenge);
+                    }
                 }
             }
+        }
+
+        if (challenge.IsFinished())
+        {
+            Debug.Log("Challenge Finished");
+            _gameState.TimeSinceChallengeDone = Time.time;
+            _gameState.ActiveChallenge = null;
+            SwitchPhase(GamePhase.WaitingForChallenge);
         }
     }
 
@@ -204,29 +219,41 @@ public class GameManager : MonoBehaviour
         if (_gameState.Phase is GamePhase.WaitingForChallenge &&
             Time.time - _gameState.TimeSinceChallengeDone >= _setup.DelayBetweenChallenge)
         {
-            ChallengeRosterEntry pattern = _patternRoster.GetPattern();
+            Challenges.Challenge challenge = _patternRoster.GetChallenge().ChallengeSO.Challenge;
+            List<List<PatternStep>> patternInstances = new();
+
+            Debug.Log("Starting new challenge");
             var parity = 1;
-            if (!pattern.BlockSymmetry)
+            if (challenge.AllowSymmetry)
             {
                 parity = Random.Range(0, 2) == 0 ? -1 : 1;
             }
 
-            Debug.Log("Starting new challenge");
-            // Create a new challenge
-            List<ChallengeStep> challengeNodes = new();
-            SweepNode nextNode = _gameState.GetRandomSweepNode(out int nodeIndex);
-            challengeNodes.Add(ChallengeStep.CreateStep(nextNode, nextNode));
-
-            foreach (ChallengePatternStep step in pattern.PatternSO.Steps)
+            var indexOffset = 0;
+            if (challenge.AllowTranslating)
             {
-                nodeIndex += step.StepDirection * parity;
-                SweepNode connectTo = _gameState.GetNodeLoopedIndex(nodeIndex, out nodeIndex);
-
-                challengeNodes.Add(ChallengeStep.CreateStep(nextNode, connectTo));
-                nextNode = connectTo;
+                _gameState.GetRandomSweepNode(out indexOffset);
             }
 
-            _gameState.Challenges.Add(new Challenge(challengeNodes));
+            foreach (Pattern pattern in challenge.Patterns)
+            {
+                List<PatternStep> patternSteps = new();
+                SweepNode startingNode = null;
+                foreach (int step in pattern.StepIndexes)
+                {
+                    // When using symmetry, the line of symmetry is the top node, which needs to be translate to be index "0" for the reflection
+                    var indexOfTopNode = 1;
+                    int finalIndex = parity * (step - indexOfTopNode) + indexOfTopNode + indexOffset;
+                    SweepNode connectTo = _gameState.GetNodeLoopedIndex(finalIndex, out finalIndex);
+
+                    patternSteps.Add(PatternStep.CreateStep(startingNode ?? connectTo, connectTo));
+                    startingNode = connectTo;
+                }
+
+                patternInstances.Add(patternSteps);
+            }
+
+            _gameState.ActiveChallenge = new Challenge(patternInstances);
             SwitchPhase(GamePhase.ChallengeRunning);
             _boardClientOut.SendLedSignal(0);
             _onStartChallenge?.Invoke();

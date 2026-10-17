@@ -8,8 +8,7 @@ namespace Challenges
     [Serializable]
     public struct ChallengeRosterEntry
     {
-        public bool BlockSymmetry;
-        public ChallengePatternSO PatternSO;
+        public ChallengeSO ChallengeSO;
         public int Weight;
     }
 
@@ -19,7 +18,7 @@ namespace Challenges
         [field: SerializeField]
         public List<ChallengeRosterEntry> Rosters { get; private set; }
 
-        public ChallengeRosterEntry GetPattern()
+        public ChallengeRosterEntry GetChallenge()
         {
             var totalWeight = 0;
             foreach (ChallengeRosterEntry entry in Rosters)

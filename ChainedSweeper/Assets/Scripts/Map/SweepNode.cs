@@ -20,11 +20,15 @@ namespace Map
         [SerializeField]
         private ParticleSystem _sweptParticles;
 
+        private int _runtimeIndex;
+
+        public int RuntimeIndex => _runtimeIndex;
+
         public List<SweepNode> AdjacentNodes => _adjacentNodes;
 
         public Vector3 Pos => transform.position;
 
-        private Dictionary<ChallengeStep, SweepConnectionVisuals> _stepVisuals = new();
+        private Dictionary<PatternStep, SweepConnectionVisuals> _stepVisuals = new();
 
         public SweepNode GetRandomAdjacentNode()
         {
@@ -45,6 +49,11 @@ namespace Map
             }
         }
 
+        public void SetIndex(int index)
+        {
+            _runtimeIndex = index;
+        }
+
         public void Tick(GameState state)
         {
             if (!state.TryGetCurrentChallenge(out Challenge challenge))
@@ -53,18 +62,27 @@ namespace Map
                 return;
             }
 
-            List<ChallengeStep> relevantSteps = challenge.StepsThatGoTo(this);
-
-            foreach (ChallengeStep step in relevantSteps)
+            var relevantSteps = new List<PatternStep>();
+            foreach (PatternInstance pattern in challenge.Patterns)
             {
-                UpdateStepVisual(step, challenge);
+                List<PatternStep> relevant = pattern.StepsThatGoTo(this);
+
+                foreach (PatternStep step in relevant)
+                {
+                    UpdateStepVisual(step, pattern);
+                }
+
+                if (!pattern.Finished)
+                {
+                    relevantSteps.AddRange(relevant);
+                }
             }
 
             _activeObject.SetActive(relevantSteps.Count > 0);
             _inactiveObject.SetActive(relevantSteps.Count == 0);
         }
 
-        private void UpdateStepVisual(ChallengeStep step, Challenge challenge)
+        private void UpdateStepVisual(PatternStep step, PatternInstance challenge)
         {
             if (!_stepVisuals.TryGetValue(step, out SweepConnectionVisuals visuals))
             {
@@ -94,7 +112,7 @@ namespace Map
 
         private void CleanupVisuals()
         {
-            foreach (KeyValuePair<ChallengeStep, SweepConnectionVisuals> pair in _stepVisuals)
+            foreach (KeyValuePair<PatternStep, SweepConnectionVisuals> pair in _stepVisuals)
             {
                 Destroy(pair.Value.gameObject);
             }
@@ -104,7 +122,7 @@ namespace Map
             _inactiveObject.SetActive(true);
         }
 
-        public void ChallengeEnded()
+        public void PatternEnded()
         {
             _sweptParticles?.Play();
             CleanupVisuals();

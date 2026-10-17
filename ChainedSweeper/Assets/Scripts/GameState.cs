@@ -17,7 +17,7 @@ public class GameState
     public PlayerState PlayerState = new();
     public GamePhase Phase;
     public GameSetup Setup;
-    public List<Challenge> Challenges = new();
+    public Challenge ActiveChallenge;
 
     public float LastReloadTime;
     public float ComboTimerRemaining;
@@ -57,9 +57,9 @@ public class GameState
 
     public bool TryGetCurrentChallenge(out Challenge challenge)
     {
-        if (Challenges.Count > 0)
+        if (ActiveChallenge != null)
         {
-            challenge = Challenges[0];
+            challenge = ActiveChallenge;
             return true;
         }
 
@@ -125,16 +125,16 @@ public class GameSetup
 }
 
 [Serializable]
-public class ChallengeStep
+public class PatternStep
 {
     public SweepNode From;
     public SweepNode To;
 
     public bool Completed;
 
-    public static ChallengeStep CreateStep(SweepNode from, SweepNode to)
+    public static PatternStep CreateStep(SweepNode from, SweepNode to)
     {
-        return new ChallengeStep
+        return new PatternStep
         {
             From = from,
             To = to,
@@ -144,41 +144,43 @@ public class ChallengeStep
 }
 
 [Serializable]
-public class Challenge
+public class PatternInstance
 {
-    public Challenge(List<ChallengeStep> steps)
+    public List<PatternStep> ChallengeSteps;
+    public HashSet<SweepNode> InvolvedNodes;
+    public int StepIndex;
+
+    public bool Finished => StepIndex >= ChallengeSteps.Count;
+
+    public PatternInstance(List<PatternStep> steps)
     {
         InvolvedNodes = new HashSet<SweepNode>();
         ChallengeSteps = steps;
 
-        foreach (ChallengeStep step in ChallengeSteps)
+        foreach (PatternStep step in ChallengeSteps)
         {
             InvolvedNodes.Add(step.From);
             InvolvedNodes.Add(step.To);
         }
     }
 
-    public List<ChallengeStep> ChallengeSteps;
-    public HashSet<SweepNode> InvolvedNodes;
-    public int StepIndex;
-
-    public bool TryGetNextStep(out ChallengeStep challengeStep)
+    public bool TryGetNextStep(out PatternStep patternStep)
     {
         for (var i = 0; i < ChallengeSteps.Count; i++)
         {
-            ChallengeStep step = ChallengeSteps[i];
+            PatternStep step = ChallengeSteps[i];
             if (i == StepIndex)
             {
-                challengeStep = step;
+                patternStep = step;
                 return true;
             }
         }
 
-        challengeStep = null;
+        patternStep = null;
         return false;
     }
 
-    public List<ChallengeStep> StepsThatGoTo(SweepNode sweepNode)
+    public List<PatternStep> StepsThatGoTo(SweepNode sweepNode)
     {
         return ChallengeSteps.Where(a => a.To == sweepNode).ToList();
     }
@@ -187,7 +189,7 @@ public class Challenge
     {
         for (var i = 0; i < ChallengeSteps.Count; i++)
         {
-            ChallengeStep step = ChallengeSteps[i];
+            PatternStep step = ChallengeSteps[i];
             if (i == StepIndex)
             {
                 step.Completed = true;
@@ -198,6 +200,7 @@ public class Challenge
                     return;
                 }
 
+                StepIndex++;
                 didFinish = true;
                 return;
             }
@@ -207,14 +210,42 @@ public class Challenge
         didFinish = false;
     }
 
-    public bool IsAfterNext(ChallengeStep step)
+    public bool IsAfterNext(PatternStep step)
     {
         return ChallengeSteps.IndexOf(step) == StepIndex + 1;
     }
 
-    public bool IsNext(ChallengeStep step)
+    public bool IsNext(PatternStep step)
     {
         return ChallengeSteps.IndexOf(step) == StepIndex;
+    }
+}
+
+[Serializable]
+public class Challenge
+{
+    public Challenge(List<List<PatternStep>> patterns)
+    {
+        Patterns = new List<PatternInstance>();
+        foreach (List<PatternStep> pattern in patterns)
+        {
+            Patterns.Add(new PatternInstance(pattern));
+        }
+    }
+
+    public List<PatternInstance> Patterns;
+
+    public bool IsFinished()
+    {
+        foreach (PatternInstance pattern in Patterns)
+        {
+            if (!pattern.Finished)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 

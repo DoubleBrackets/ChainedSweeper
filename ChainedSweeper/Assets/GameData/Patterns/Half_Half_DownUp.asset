@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9bb1ba5713ff4c3dba33a56dbf7379e1, type: 3}
-  m_Name: LinearLong
+  m_Name: Half_Half_DownUp
   m_EditorClassIdentifier: Assembly-CSharp::Challenges.ChallengePatternSO
-  DevNote: Half the board
-  <Steps>k__BackingField:
-  - StepDirection: 1
-  - StepDirection: 1
-  - StepDirection: 1
-  - StepDirection: 1
+  DevNote: 
+  <Challenge>k__BackingField:
+    AllowSymmetry: 0
+    AllowTranslating: 0
+    Patterns:
+    - StepIndexes: 040000000300000002000000
+    - StepIndexes: 060000000700000000000000
